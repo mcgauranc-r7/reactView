@@ -1,0 +1,1 @@
+mongo react-tweets --eval "db.dropDatabase()"
