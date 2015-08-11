@@ -229,10 +229,7 @@ footer .update-message
 {
     font-size: 13px;
     font-weight: bold;
-
     position: relative;
-    top: -60px;
-
     width: 100%;
 
     -webkit-transition: 300ms top ease;

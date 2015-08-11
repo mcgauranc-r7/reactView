@@ -2,6 +2,27 @@ var geocoder = new google.maps.Geocoder();
 var heatmap, map;
 var liveTweets = new google.maps.MVCArray();
  
+function updateTerm(q) {
+
+  if ($("#q").val() === ""){
+    return false;
+  }
+  $.ajax({
+      url : "/query",
+      type: "POST",
+      data: JSON.stringify({q: $("#q").val()}),
+      contentType: "application/json; charset=utf-8",
+      dataType   : "json",
+      success    : function(){
+          console.log("Pure jQuery Pure JS object");
+      }
+  });
+    $("#q").attr("disabled", true);
+	setTimeout(function(){
+		$("#q").attr("disabled", false);
+	}, 10000)
+ 
+}
 function codeAddress(data) {
   var res, address = data["user"].location;
   geocoder.geocode( { 'address': address}, function(results, status) {

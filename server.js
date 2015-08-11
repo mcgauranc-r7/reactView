@@ -6,12 +6,13 @@ var express = require('express'),
   twitter = require('twitter'),
   routes = require('./routes'),
   config = require('./config'),
-  streamHandler = require('./utils/streamHandler');
-
+  streamHandler = require('./utils/streamHandler'),
+  term = "mufc", bodyParser = require('body-parser');
 // Create an express instance and set a port variable
+
+var stream;
 var app = express();
 var port = process.env.PORT || 8080;
-
 // Set handlebars as the templating engine
 app.engine('handlebars', exphbs({ defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
@@ -31,6 +32,31 @@ app.get('/', routes.index);
 // Page Route
 app.get('/page/:page/:skip', routes.page);
 
+// Term Update
+app.use(bodyParser.json()); // support json encoded bodies
+app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+var a;
+app.post('/query', function(request, response) {
+  if (term === request.body.q) {
+		return false;
+	} 
+	term = request.body.q;
+	
+	try {
+		steam.destroy();
+	} catch (error) {
+		
+	}
+	twit.stream('statuses/filter', {"track" : term}, function(str){
+	  stream = str;
+	  streamHandler(stream,io);
+	});		
+  response.write('{}');
+  response.end();
+});
+
+
+
 // Set /public as our static content dir
 app.use("/", express.static(__dirname + "/public/"));
 
@@ -41,13 +67,6 @@ var server = http.createServer(app).listen(port, function() {
 
 // Initialize socket.io
 var io = require('socket.io').listen(server);
-
-// Set a stream listener for tweets matching tracking keywords
-//twit.stream('statuses/filter',{ track: 'mufc' , 'locations':'-6.397027,-6.130952,53.398938,53.282303'}, function(stream){
-twit.stream('statuses/filter',{ "track" : "mufc"}, function(stream){
-  streamHandler(stream,io);
-});
-
 var jobs=require("./jobs/purge");
 jobs.start();
 
