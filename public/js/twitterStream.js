@@ -2,13 +2,27 @@ var geocoder = new google.maps.Geocoder();
 var heatmap, map;
 var liveTweets = new google.maps.MVCArray();
  
-function codeAddress(address) {
-  var res;
+function codeAddress(data) {
+  var res, address = data["user"].location;
   geocoder.geocode( { 'address': address}, function(results, status) {
     if (status == google.maps.GeocoderStatus.OK) {
       //Add tweet to the heat map array.
+      console.log("info window")
+
       var tweetLocation = new google.maps.LatLng(results[0].geometry.location.G,results[0].geometry.location.K);
       liveTweets.push(tweetLocation);
+      var contentString = '<div id="content">'+
+      '<img src="'+data['user']['profile_image_url']+'">' + 
+      '<div id="siteNotice">'+
+      '</div>'+
+      '<h1 id="firstHeading" class="firstHeading">' + data['user']['name'] + '</h1>'+
+      '<div id="bodyContent">'+
+      '<p>' +  data["text"] + '</p>'+
+      '</div>'+
+      '</div>';
+     var infowindow = new google.maps.InfoWindow({
+          content: contentString
+      });
 
       //Flash a dot onto the map quickly
       var image = "css/small-dot-icon.png";
@@ -17,11 +31,12 @@ function codeAddress(address) {
         map: map,
         icon: image
       });
+      google.maps.event.addListener(marker, 'click', function() {
+        infowindow.open(map,marker);
+      });
       setTimeout(function(){
-        marker.setMap(null);
-      },600);
-    } else {
-      alert('Geocode was not successful for the following reason: ' + status);
+        //marker.setMap(null);
+      },600); 
     }
     return address; 
   });
@@ -39,27 +54,25 @@ function initialize() {
     mapTypeControlOptions: {
       style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
       position: google.maps.ControlPosition.LEFT_BOTTOM
-    },
-    styles: light_grey_style
-  };
-  var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-  
+    }
+ };
+  map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+
   //Setup heat map and link to Twitter array we will append data to
   heatmap = new google.maps.visualization.HeatmapLayer({
     data: liveTweets,
     radius: 25
   });
   heatmap.setMap(map);
-
   if(io !== undefined) {
     // Storage for WebSocket connections
     var socket = io.connect('/');
 
-    socket.on('twitter-place', function (address) {
+    socket.on('twitter-place', function (data) {
 
 
       //Add tweet to the heat map array.
-      codeAddress(address);
+      codeAddress(data);
 
     });
 
@@ -78,9 +91,6 @@ function initialize() {
         map: map,
         icon: image
       });
-      setTimeout(function(){
-        marker.setMap(null);
-      },600);
 
     });
 

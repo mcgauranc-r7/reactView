@@ -16,14 +16,13 @@ module.exports = function(stream, io) {
         // Create a new model instance with our object
         var tweetEntry = new Tweet(tweet);
         tweetEntry.save(function(err) {
-
             if (!err) {
                 // If everything is cool, socket.io emits the tweet.
                 io.emit('tweet', tweet);
-            }
+            } 
         });
         if (data["user"].location) {
-          io.emit("twitter-place", data["user"].location);          
+          io.emit("twitter-place", data);          
         }
         if (data.place) {
             if (data.place.bounding_box === 'Polygon') {
