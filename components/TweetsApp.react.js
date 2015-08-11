@@ -201,7 +201,7 @@ module.exports = TweetsApp = React.createClass({
   render: function(){
 
     return (
-      <div className="tweets-app">
+      <div className="">
         <NotificationBar count={this.state.count} onShowNewTweets={this.showNewTweets}/>
         <Tweets tweets={this.state.tweets} />
         <Loader paging={this.state.paging}/>

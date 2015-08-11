@@ -121,6 +121,7 @@ body {
   height:100%;
 }
 .tweetOverlay {
+  margin-top: 5em;  
   position: fixed;
   top: 0;
   left: 0;
@@ -243,11 +244,6 @@ footer .update-message
 
     color: white;
     background: rgba(241, 196, 15,.9);
-}
-
-.notification-bar.active
-{
-    top: 0;
 }
 
 .notification-bar a
