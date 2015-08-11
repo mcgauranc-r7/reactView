@@ -1,6 +1,6 @@
 var CronJob = require('cron').CronJob;
 var mongoose = require('mongoose');
-var job = new CronJob('* * * * * *', function() {
+var job = new CronJob('0/10 * * * * *', function() {
   var dbConnUtils=require("../utils/dbConn");
   dbConnUtils(mongoose).dropCollections(function(){ console.log("deleted")});
   /*

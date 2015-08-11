@@ -29,7 +29,11 @@
     "watchify": "^3.1.1",
     "async": "~1.4.1",
     "underscore": "~1.8.3",
-    "cron": "~1.0.9"
+    "cron": "~1.0.9",
+    "grunt-wiredep": "~2.0.0",
+    "matchdep": "~0.3.0",
+    "grunt-react": "~0.12.2",
+    "grunt": "~0.4.5"
   },
   "browserify": {
     "transform": [
